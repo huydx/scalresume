@@ -1,15 +1,18 @@
 package knockoff
 
 import com.tristanhunt.knockoff._
-import scala.util.parsing.input.{ CharSequenceReader, Position, Reader }
+import scala.util.parsing.input.{ Position }
 import collection.mutable.ListBuffer
-
-object ScalresumeDiscounter extends Discounter with TitleDiscounter
 
 trait TitleDiscounter extends Discounter {
   override def newChunkParser: ChunkParser = new ChunkParser with TitleChunkParser
   override def blockToXHTML: Block => xml.Node = {
     val fallback: PartialFunction[Block, xml.Node] = { case x => super.blockToXHTML(x) }
+    val toXHTML: PartialFunction[Block, xml.Node] = {
+      case TitleBlock(content, pos) =>
+        <p class="header">{ content }</p>
+    }
+    toXHTML orElse fallback
   }
 }
 
@@ -21,7 +24,11 @@ trait TitleChunkParser extends ChunkParser {
   }
 
   def headerChunk: Parser[Chunk] = {
-    """---(\\s+)""".r ~> """[^\n]+""".r ^^ { case(_, header) => TextChunk(header) }
+    """~~~ """.r ~ """[^\n]+""".r ^^ {
+      case symbol ~ header => {
+        TextChunk(header)
+      }
+    }
   }
 }
 
@@ -30,10 +37,9 @@ case class TitleChunk(content: String) extends Chunk {
                      remaining: List[(Chunk, Seq[Span], Position)],
                      spans: Seq[Span], position: Position,
                      discounter: Discounter): Unit = discounter match {
-    case td: TitleDiscounter => list += Title(content, position)
+    case td: TitleDiscounter => list += TitleBlock(content, position)
   }
 }
 
-case class Title(content: String,  position : Position) extends Block {
-}
+case class TitleBlock(content: String,  position : Position) extends Block
 

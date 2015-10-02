@@ -1,9 +1,7 @@
 package library
 
 import java.io._
-
-import com.tristanhunt.knockoff.DefaultDiscounter._
-
+import knockoff.Knock
 import scala.annotation.tailrec
 
 object Produce {
@@ -11,13 +9,14 @@ object Produce {
   def apply(inputFile: File, outputDir: File) = {
     //convert to markdown
     val md = readFromFile(inputFile)
-    val blocks= knockoff(md)
+    val blocks = Knock(md)
     val output = Template(blocks)
 
     recursiveCopy(new File(Shared.resources.getPath), outputDir)
     val printer = new PrintWriter(new File(s"${outputDir.getAbsolutePath}/webroot/index.html"))
-    printer.print(output)
-    printer.close()
+    using(List(printer)) {
+      printer.print(output)
+    }
   }
 
   private[this] def recursiveCopy(from: File, toDir: File): Unit = {
