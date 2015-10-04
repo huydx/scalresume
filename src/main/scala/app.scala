@@ -1,6 +1,6 @@
 import java.io.File
 
-import library.{Produce, Preview}
+import library.{ Produce, Preview }
 
 object Scalresume {
   def main(args: Array[String]): Unit = {
@@ -10,20 +10,20 @@ object Scalresume {
   private[this] def run(args: Array[String]): Int = {
     try {
       args match {
-        case Array(SingleFile(input), Dir(output)) => {
+        case Array(SingleFile(input), Dir(output)) ⇒ {
           Produce(input, output)
         }
-        case Array(Dir(output)) => preview(output)
-        case Array() => println(
+        case Array(Dir(output)) ⇒ preview(output)
+        case Array() ⇒ println(
           """
             | Usage:  scalresume [SRC] [DST] to generate
             |         scalresume [DST] to preview
           """.stripMargin)
-        case _ => println("intput file does not exist")
+        case _ ⇒ println("intput file does not exist")
       }
       0
     } catch {
-      case ex: Exception => {
+      case ex: Exception ⇒ {
         ex.printStackTrace()
         1
       }
@@ -32,10 +32,11 @@ object Scalresume {
 
   private[this] def preview(dir: File) = {
     Preview(dir.getAbsolutePath).run {
-      server => unfiltered.util.Browser.open(
-        "http://127.0.0.1:%d/".format(server.portBindings.head.port)
-      )
-      println("\nPreviewing `%s`. Press CTRL+C to stop.".format(dir))
+      server ⇒
+        unfiltered.util.Browser.open(
+          "http://127.0.0.1:%d/".format(server.portBindings.head.port)
+        )
+        println("\nPreviewing `%s`. Press CTRL+C to stop.".format(dir))
     }
     0
   }

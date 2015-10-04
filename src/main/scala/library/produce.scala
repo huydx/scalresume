@@ -21,18 +21,18 @@ object Produce {
 
   private[this] def recursiveCopy(from: File, toDir: File): Unit = {
     from match {
-      case dir if dir.isDirectory =>
+      case dir if dir.isDirectory ⇒
         val newToDir = s"${toDir.getAbsolutePath}/${dir.getName}"
         new File(newToDir).mkdir()
-        dir.listFiles().foreach { f => recursiveCopy(f, new File(newToDir)) }
-      case file if file.isFile =>
+        dir.listFiles().foreach { f ⇒ recursiveCopy(f, new File(newToDir)) }
+      case file if file.isFile ⇒
         val inStream = new FileInputStream(from)
         val newFileLocation = s"$toDir/${from.getName}"
         val outStream = new FileOutputStream(newFileLocation)
         using(List(inStream, outStream)) {
           copy(inStream, outStream)
         }
-      case _ => throw new RuntimeException(s"not found from dir at $from")
+      case _ ⇒ throw new RuntimeException(s"not found from dir at $from")
     }
   }
 
@@ -48,13 +48,13 @@ object Produce {
     out.flush()
   }
 
-  private[this] def using[A <: {def close()}](resources: Seq[A])(func: => Unit) = {
+  private[this] def using[A <: { def close() }](resources: Seq[A])(func: ⇒ Unit) = {
     try {
       func
     } catch {
-      case ex: Exception => ex.printStackTrace()
+      case ex: Exception ⇒ ex.printStackTrace()
     } finally {
-      resources.foreach(r => r.close())
+      resources.foreach(r ⇒ r.close())
     }
   }
 

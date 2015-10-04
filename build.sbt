@@ -1,3 +1,12 @@
+import scalariform.formatter.preferences._
+
+scalariformSettings
+
+ScalariformKeys.preferences := ScalariformKeys.preferences.value
+  .setPreference(AlignSingleLineCaseStatements, true)
+  .setPreference(DoubleIndentClassDeclaration, true)
+  .setPreference(RewriteArrowSymbols, true)
+
 lazy val common = Seq(
   organization := "kipalog",
   version := "0.0.1",
