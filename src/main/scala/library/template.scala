@@ -1,9 +1,10 @@
 package library
 
-import com.tristanhunt.knockoff.DefaultDiscounter._
 import com.tristanhunt.knockoff._
+import knockoff.ScalresumeDiscounter
 
 object Template {
+  def discounter = ScalresumeDiscounter
   def apply(blocks: Seq[Block]): String = {
     val html = <html>
       <head>
@@ -13,7 +14,7 @@ object Template {
         <link rel="stylesheet" href="css/scalresume-grid.css" type="text/css" media="print"/>
         <script type="text/javascript" src="js/scalresume.js" ></script>
 
-        { toXHTML(blocks) }
+        { discounter.toXHTML(blocks) }
       </head>
     </html>
 

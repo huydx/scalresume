@@ -1,8 +1,17 @@
 package knockoff
 
 import com.tristanhunt.knockoff._
-import scala.util.parsing.input.{ Position }
+import scala.util.parsing.input.Position
 import collection.mutable.ListBuffer
+
+/**
+ * Some note about extends knockoff
+ * - when need to append new parser rule:
+    - extends your “SpecialDiscounter”
+    - extends new “SpecialChunkParser” with parser rule which convert “your rule” to “your custom Chunk” ,
+      inside “your custom Chunk”, need to override appendNewBlock method which convert chunk to block
+    - inside your “SpecialDiscounter”override blockToXTML convert your block to html
+ */
 
 trait TitleDiscounter extends Discounter {
   override def newChunkParser: ChunkParser = new ChunkParser with TitleChunkParser
@@ -25,9 +34,7 @@ trait TitleChunkParser extends ChunkParser {
 
   def headerChunk: Parser[Chunk] = {
     """~~~ """.r ~ """[^\n]+""".r ^^ {
-      case symbol ~ header => {
-        TextChunk(header)
-      }
+      case symbol ~ header => TitleChunk(header)
     }
   }
 }
@@ -37,7 +44,7 @@ case class TitleChunk(content: String) extends Chunk {
                      remaining: List[(Chunk, Seq[Span], Position)],
                      spans: Seq[Span], position: Position,
                      discounter: Discounter): Unit = discounter match {
-    case td: TitleDiscounter => list += TitleBlock(content, position)
+    case td: TitleDiscounter =>  list += TitleBlock(content, position)
   }
 }
 
