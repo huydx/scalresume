@@ -14,7 +14,11 @@ object Scalresume {
           Produce(input, output)
         }
         case Array(Dir(output)) => preview(output)
-        case Array() => println("Usage: scalresume [SRC] [DST]")
+        case Array() => println(
+          """
+            | Usage:  scalresume [SRC] [DST] to generate
+            |         scalresume [DST] to preview
+          """.stripMargin)
         case _ => println("intput file does not exist")
       }
       0

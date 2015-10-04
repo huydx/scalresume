@@ -23,3 +23,4 @@ lazy val scaresume: Project = (project in file("."))
     libraryDependencies ++= knockOffDep.value ++ unfilterDeps.value,
     fork in run := true
   )
+
